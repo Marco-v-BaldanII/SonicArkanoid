@@ -10,6 +10,8 @@ public class Ball : MonoBehaviour
     public bool launched = false;
     public int launchForce ;
 
+
+
     [SerializeField] private int hp = 3;
     [SerializeField] private GameObject explosionObject;
 
@@ -17,7 +19,7 @@ public class Ball : MonoBehaviour
 
     public Paddle paddle;
 
-    private float velocityFactor = 1.03f;
+    private float velocityFactor = 1.02f;
 
     bool hit = false;
 
@@ -28,7 +30,7 @@ public class Ball : MonoBehaviour
     void Start()
     {
         ballRigidbody = GetComponent<Rigidbody2D>();
-        paddle.LaunchEvent += Launch; /*Subscribe to the launch event*/
+
     }
 
     // Update is called once per frame
@@ -114,9 +116,15 @@ public class Ball : MonoBehaviour
             ballRigidbody.velocity = Vector2.zero;
             hp -= 1;
             missEvent.Invoke(hp);
+
+            Invoke("Launch", 2);
+
         }
 
-        ballRigidbody.velocity = Vector2.ClampMagnitude(ballRigidbody.velocity, 10);
+        //if(ballRigidbody.velocity.y > 0) { ballRigidbody.velocity = new Vector3(ballRigidbody.velocity.x, Mathf.Clamp(ballRigidbody.velocity.y,  3, 10)); }
+        //else if (ballRigidbody.velocity.y < 0) { ballRigidbody.velocity = new Vector3(ballRigidbody.velocity.x, Mathf.Clamp(ballRigidbody.velocity.y, -3, -10)); }
+
+        //ballRigidbody.velocity = Vector2.ClampMagnitude(ballRigidbody.velocity, 10);
 
         
     }

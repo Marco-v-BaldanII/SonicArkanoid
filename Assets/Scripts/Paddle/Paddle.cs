@@ -20,7 +20,7 @@ public class Paddle : MonoBehaviour
     public Rigidbody2D body;
 
     public Ball ballPrefab;
-    private Ball ball;
+    public Ball ball;
 
     public delegate void EventHandler();
     public event EventHandler LaunchEvent;
@@ -36,9 +36,10 @@ public class Paddle : MonoBehaviour
         leftPos = leftBorder.transform.position;
         rightPos = rightBorder.transform.position;
 
-
         ball = Instantiate(ballPrefab, canvas.transform,true);
         ball.paddle = this;
+
+        Invoke("LaunchBall", 2);
 
     }
 
@@ -48,7 +49,10 @@ public class Paddle : MonoBehaviour
         
         Vector3 pathVector = (rightBorder.transform.position - leftBorder.transform.position)*0.35f;
 
-        pathVector *= currentSlider.value;
+        if (currentSlider)
+        {
+            pathVector *= currentSlider.value;
+        }
 
         Debug.DrawLine(rightPos,  pathVector);
 
@@ -57,10 +61,8 @@ public class Paddle : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            LaunchEvent.Invoke();
+            ball.Launch();
         }
-
-
 
     }
 
@@ -86,6 +88,12 @@ public class Paddle : MonoBehaviour
         }
     }
 
+    public Vector2 GetBallPosition() { return ball.transform.position; }
 
+
+    public void LaunchBall()
+    {
+        ball.Launch();
+    }
 
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+[System.Serializable]
 public class BrickPlacer : MonoBehaviour
 {
     
@@ -19,6 +20,10 @@ public class BrickPlacer : MonoBehaviour
     public Score vScore;
     public Score hScore;
 
+    public IBrick[,] brickMatrix;
+
+    List<BrickData> list = new List<BrickData>();
+    public List<Brick> bricks;
 
     public int yOffset = 20;
 
@@ -27,7 +32,12 @@ public class BrickPlacer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SpawnGrid();
+        bricks = new List<Brick>();
+        brickMatrix = new IBrick[rows, columns];
+        if (MatchManager.instance.loadBricks == false)
+        { 
+            SpawnGrid(); 
+        }
     }
 
     // Update is called once per frame
@@ -55,6 +65,9 @@ public class BrickPlacer : MonoBehaviour
         {
             for (int column = 0; column < columns; column++)
             {
+
+               
+
                 /* Calculate the position for each block */
                 Vector2 position = new Vector2(
                     startPosition.x + column * (blockWidth + spacing),
@@ -64,22 +77,25 @@ public class BrickPlacer : MonoBehaviour
                 IBrick brickBuilder;
                 Tuple<Score, Score> scoreTuple = new Tuple<Score, Score>(vScore, hScore);
 
-                switch ( UnityEngine.Random.Range(0,2))
+                int id = UnityEngine.Random.Range(0, MatchManager.instance.GetMatchesWon()+2);
+                // The more won matches the harder blocks spawn
+                if (id == 0)
                 {
-                    case 0:
-                        brickBuilder = new MidBrick(blockPrefab, canvas, scoreTuple );
-                        break;
-                    case 1:
-                        brickBuilder = new MidBrick(blockPrefab, canvas, scoreTuple);
-                        break;
-                    default:
-                        brickBuilder = new WeakBrick(blockPrefab, canvas);
-                        break;
-
+                    brickBuilder = null;
                 }
-                brickBuilder.SetHealth();
-                brickBuilder.SetPosition(blockWidth, blockHeight, position);
+                else if (id < 2)
+                {
+                    brickBuilder = new WeakBrick(blockPrefab, canvas, scoreTuple, this); 
+                }
+                else
+                {
+                    brickBuilder = new MidBrick(blockPrefab, canvas, scoreTuple, this);
+                }
 
+                brickBuilder?.SetHealth();
+                brickBuilder?.SetPosition(blockWidth, blockHeight, position);
+
+                
 
                 //GameObject block = Instantiate(blockPrefab, canvas);
 
@@ -93,4 +109,60 @@ public class BrickPlacer : MonoBehaviour
             }
         }
     }
+
+    public void LoadBricks(BrickDataCollection collection)
+    {
+        foreach (BrickData data in collection.brick)
+        {
+            IBrick brickBuilder;
+            Tuple<Score, Score> scoreTuple = new Tuple<Score, Score>(vScore, hScore);
+            if (data.hp == 1)
+            {
+                brickBuilder = new WeakBrick(blockPrefab, canvas, scoreTuple, this);
+            }
+            else
+            {
+                brickBuilder = new MidBrick(blockPrefab, canvas, scoreTuple, this);
+            }
+            brickBuilder?.SetHealth();
+            brickBuilder?.SetPosition(blockWidth, blockHeight, data.position);
+            brickBuilder?.Load(data.position, data.hp);
+        }
+    }
+
+    public List<BrickData> SaveBricks()
+    {
+        List<BrickData> brickData = new List<BrickData>();
+
+        for (int i = 0; i < bricks.Count; ++i)
+        {
+          
+            if (bricks[i] != null)
+            {
+                brickData.Add(bricks[i].GetSaveData());
+            }
+        }
+
+        return brickData;
+
+    }
+
+}
+
+
+
+[System.Serializable]
+public class BrickData
+{
+
+    public BrickData(int hp, Vector2 position)
+    {
+        this.hp = hp;
+        this.position = position;
+    }
+
+    public int hp;
+
+    public Vector2 position;
+
 }

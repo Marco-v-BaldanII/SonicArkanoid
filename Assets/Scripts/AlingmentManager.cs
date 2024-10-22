@@ -26,6 +26,7 @@ public class AlingmentManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (MatchManager.instance.IsPaused()) { return; }
         
         if (Screen.width > Screen.height)
         {
@@ -33,6 +34,9 @@ public class AlingmentManager : MonoBehaviour
             verticalCanvas.SetActive(false);
             orientation = Orientation.LANDSCAPE;
             paddle?.ChangeOritentation(orientation);
+
+
+            Time.timeScale = 1.8f;
         }
         else
         {
@@ -40,6 +44,8 @@ public class AlingmentManager : MonoBehaviour
             horizontalCanvas.SetActive(false);
             orientation = Orientation.PORTRAIT;
             paddle?.ChangeOritentation(orientation);
+
+            Time.timeScale = 1.0f;
         }
 
     }

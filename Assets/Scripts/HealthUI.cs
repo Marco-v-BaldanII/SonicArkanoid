@@ -33,5 +33,17 @@ public class HealthUI : MonoBehaviour
     {
         Debug.Log(hp);
         image.rectTransform.sizeDelta = new Vector2( hp * TILE_WIDTH , image.rectTransform.sizeDelta.y);
+        
+
+        if (hp <= 0)
+        {
+            Debug.Log("DEAD");
+
+            if (gameObject.activeSelf)
+            {
+                MatchManager.instance.Loose();
+            }
+        }
+
     }
 }

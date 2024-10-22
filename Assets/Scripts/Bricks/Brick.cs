@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
+[System.Serializable]
 public class Brick : MonoBehaviour
 {
 
@@ -15,6 +16,12 @@ public class Brick : MonoBehaviour
 
     private Score score1;
     private Score score2;
+
+
+    private void Start()
+    {
+        MatchManager.instance.RegisterSpawnBlock();
+    }
     public void ReceiveDamage(int damage = 1)
     {
         hp -= 1;
@@ -46,6 +53,7 @@ public class Brick : MonoBehaviour
 
     private void Destroy()
     {
+        MatchManager.instance.RegisterDestroyBlock();
         Destroy(this.gameObject);
     }
 
@@ -63,6 +71,11 @@ public class Brick : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         ReceiveDamage(100);
+    }
+
+    public BrickData GetSaveData()
+    {
+        return new BrickData(hp, transform.position);
     }
 
 }

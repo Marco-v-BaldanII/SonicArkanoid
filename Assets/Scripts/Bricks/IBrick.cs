@@ -9,6 +9,6 @@ public interface IBrick
 
     public void SetPosition(float width, float height, Vector2 position);
 
-
+    public void Load(Vector2 tranformPosition, int hp);
 
 }

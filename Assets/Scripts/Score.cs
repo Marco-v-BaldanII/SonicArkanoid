@@ -14,10 +14,19 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        scoreLabel = GetComponent<TextMeshProUGUI>();
+        points = MatchManager.instance.GetPoints();
+        AddPoints(0);
+
+        // When you win the match, sdn the points to be saved
+        MatchManager.instance.winSignal += SendPoints;
     }
 
     // Update is called once per frame
+
+    public void SendPoints()
+    {
+        MatchManager.instance.SavePoints(points);
+    }
     
     public void AddPoints(int pts)
     {
