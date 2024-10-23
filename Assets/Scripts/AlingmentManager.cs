@@ -35,8 +35,9 @@ public class AlingmentManager : MonoBehaviour
             orientation = Orientation.LANDSCAPE;
             paddle?.ChangeOritentation(orientation);
 
+            //Time.timeScale = 1.8f;
 
-            Time.timeScale = 1.8f;
+            Time.timeScale = 1.0f;
         }
         else
         {

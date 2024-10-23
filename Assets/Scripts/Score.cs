@@ -11,6 +11,10 @@ public class Score : MonoBehaviour
 
     private int points = 0;
 
+
+    [SerializeField] private SaveManager saveManager;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +23,9 @@ public class Score : MonoBehaviour
 
         // When you win the match, sdn the points to be saved
         MatchManager.instance.winSignal += SendPoints;
+        MatchManager.instance.loadSignal += LoadPoints;
+        MatchManager.instance.savePointSignal += SendPoints;
+
     }
 
     // Update is called once per frame
@@ -33,5 +40,20 @@ public class Score : MonoBehaviour
         points += pts;
         scoreLabel.text = points.ToString();
     }
+
+    public void LoadPoints(int pts) /* The saveManager will send the points */
+    {
+        points = pts;
+        scoreLabel.text = points.ToString();
+    }
+
+    private void OnDestroy()
+    {
+        // Desusbrcribe from events
+        MatchManager.instance.winSignal -= SendPoints;
+        MatchManager.instance.loadSignal -= LoadPoints;
+        MatchManager.instance.savePointSignal -= SendPoints;
+    }
+
 
 }

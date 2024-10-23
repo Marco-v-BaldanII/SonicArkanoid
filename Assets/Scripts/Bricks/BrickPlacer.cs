@@ -110,13 +110,15 @@ public class BrickPlacer : MonoBehaviour
         }
     }
 
-    public void LoadBricks(BrickDataCollection collection)
+    public void LoadBricks(SaveData data)
     {
-        foreach (BrickData data in collection.brick)
+
+
+        foreach (BrickData Brickdata in data.bricks)
         {
             IBrick brickBuilder;
             Tuple<Score, Score> scoreTuple = new Tuple<Score, Score>(vScore, hScore);
-            if (data.hp == 1)
+            if (Brickdata.hp == 1)
             {
                 brickBuilder = new WeakBrick(blockPrefab, canvas, scoreTuple, this);
             }
@@ -125,8 +127,8 @@ public class BrickPlacer : MonoBehaviour
                 brickBuilder = new MidBrick(blockPrefab, canvas, scoreTuple, this);
             }
             brickBuilder?.SetHealth();
-            brickBuilder?.SetPosition(blockWidth, blockHeight, data.position);
-            brickBuilder?.Load(data.position, data.hp);
+            brickBuilder?.SetPosition(blockWidth, blockHeight, Brickdata.position);
+            brickBuilder?.Load(Brickdata.position, Brickdata.hp);
         }
     }
 

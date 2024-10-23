@@ -16,8 +16,13 @@ public class MatchManager : MonoBehaviour
     private int points = 0;
 
     public delegate void  EventHandler();
-
     public event EventHandler winSignal;
+    public event EventHandler looseSignal;
+
+    public delegate void LoadEventHandler(int pts);
+    public event LoadEventHandler loadSignal;
+
+    public event EventHandler savePointSignal;
 
     public bool loadBricks = false;
     public int GetMatchesWon() { return wonMatches; }
@@ -36,6 +41,9 @@ public class MatchManager : MonoBehaviour
     }
     public void Loose()
     {
+        looseSignal.Invoke();
+
+        points = 0;
         SceneManager.LoadScene(1);
     }
 
@@ -51,9 +59,15 @@ public class MatchManager : MonoBehaviour
     public void SavePoints(int points)
     {
         this.points = points;
+        loadSignal.Invoke(points);
     }
 
-    public int GetPoints() { return this.points; }
+    public int GetPoints() 
+    {
+        savePointSignal?.Invoke();
+
+        return this.points; 
+    }
 
     public void RegisterSpawnBlock()
     {
@@ -63,6 +77,7 @@ public class MatchManager : MonoBehaviour
     public void RegisterDestroyBlock()
     {
         numBlocks--;
+        Debug.Log("num blocks " + numBlocks.ToString());
         if (numBlocks <= 0)
         {
             Win();
@@ -95,10 +110,19 @@ public class MatchManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void StartNewGame()
+    public void StartNewGame(bool title_scrren = false)
     {
         loadBricks = false;
-        SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex );
+        if (title_scrren)
+        {
+            SceneManager.LoadScene(0);
+
+        }
+
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
 }

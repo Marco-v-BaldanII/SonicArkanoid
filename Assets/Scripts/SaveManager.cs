@@ -21,6 +21,10 @@ public class SaveManager : MonoBehaviour
         {
             Load();
         }
+
+        MatchManager.instance.looseSignal += SaveHighScore;
+        MatchManager.instance.looseSignal += DeleteSaveFile;
+
     }
 
     private void Update()
@@ -41,83 +45,115 @@ public class SaveManager : MonoBehaviour
     {
         List<BrickData> a = brickPlacer.SaveBricks();
 
-        //string saved = "";
+        SaveData data = new SaveData();
+        data.bricks = brickPlacer.SaveBricks();
+        data.points = MatchManager.instance.GetPoints();
+        var saved = JsonUtility.ToJson(data);
 
-        //foreach (BrickData brick in a)
-        //{
-            
-        //    saved += '\n'  + JsonUtility.ToJson(brick);
-        //}
-
-        BrickDataCollection bricks = new BrickDataCollection();
-        bricks.brick = brickPlacer.SaveBricks();
-
-        var saved = JsonUtility.ToJson(bricks);
-
-        //var saved = JsonUtility.ToJson(brickPlacer.SaveBricks());
-        Debug.Log(saved);
-
-        //                            saveFile path                                            Pass the json String
+        //                            saveFile path                                   Pass the json String
         File.WriteAllText(Application.dataPath + "/saveFile" + saveFile.ToString() + ".json", saved);
-
-        Debug.Log(Application.dataPath);
-
-
         SceneManager.LoadScene(1);
+
+
+    }
+
+    public void DeleteSaveFile()
+    {
+        File.Delete(Application.dataPath + "/saveFile1.json");
+    }
+
+    public bool SaveExists()
+    {
+        if (File.Exists(Application.dataPath + "/saveFile1.json"))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void Load(int saveFile = 1)
     {
         var path = Application.dataPath + "/saveFile" + saveFile.ToString() + ".json";
 
-        BrickDataCollection bricks = new BrickDataCollection();
+        // create the save data class
+        SaveData bricks = new SaveData();
 
         if (File.Exists(path))
         {
 
             string fileContent = File.ReadAllText(path);
-            
-
             Debug.Log(fileContent);
 
+
+            //save the filecontent into the "bricks" data structure
             JsonUtility.FromJsonOverwrite(fileContent, bricks);
-
-            brickPlacer.LoadBricks(bricks);
-
-
+            brickPlacer?.LoadBricks(bricks);
+            MatchManager.instance.SavePoints(bricks.points);
+            
 
         }
     }
 
-    public void SaveBinary()
+    public int LoadHighScore()
     {
-        FileStream fileStream = new FileStream(Application.persistentDataPath + "/playerData1.json", FileMode.Create);
+        var path = Application.dataPath + "/score.json";
 
-        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        // create the save data class
+        HighScore highScore = new HighScore(0);
 
-        binaryFormatter.Serialize(fileStream, playerData);
+        if (File.Exists(path))
+        {
 
-        fileStream.Close();
+            string fileContent = File.ReadAllText(path);
+            Debug.Log(fileContent);
 
+
+            //save the filecontent into the "bricks" data structure
+            JsonUtility.FromJsonOverwrite(fileContent, highScore);
+
+            return highScore.highScore;
+        }
+        return -1; // no file exists
     }
 
-
-    public void LoadBinary()
+    public void SaveHighScore()
     {
-        FileStream fileStream = new FileStream(Application.persistentDataPath + "/playerData1.json", FileMode.Open);
+        int score = MatchManager.instance.GetPoints();
 
+        if (score >= LoadHighScore())
+        {
+            HighScore highScore = new HighScore(score);
+            var saved = JsonUtility.ToJson(highScore);
+            File.WriteAllText(Application.dataPath + "/score.json", saved);
 
-
-
+        }
     }
 
-
+    private void OnDestroy()
+    {
+        MatchManager.instance.looseSignal -= SaveHighScore;
+        MatchManager.instance.looseSignal -= DeleteSaveFile;
+    }
 
 }
 
 
 [System.Serializable]
-public class BrickDataCollection
+public class SaveData
 {
-    public List<BrickData> brick;
+    public List<BrickData> bricks;
+
+    public int points;
+
+
+}
+
+public class HighScore
+{
+    public HighScore(int highScore)
+    {
+        this.highScore = highScore;
+    }
+
+    public int highScore;
 }
