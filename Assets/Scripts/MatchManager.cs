@@ -53,7 +53,7 @@ public class MatchManager : MonoBehaviour
         winSignal.Invoke();
 
 
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(3);
     }
 
     public void SavePoints(int points)
