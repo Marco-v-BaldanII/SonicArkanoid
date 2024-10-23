@@ -59,7 +59,7 @@ public class MatchManager : MonoBehaviour
     public void SavePoints(int points)
     {
         this.points = points;
-        loadSignal.Invoke(points);
+        loadSignal?.Invoke(points);
     }
 
     public int GetPoints() 

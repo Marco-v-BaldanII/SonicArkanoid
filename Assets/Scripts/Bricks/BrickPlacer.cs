@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -29,9 +30,15 @@ public class BrickPlacer : MonoBehaviour
 
     public GameObject BrickPrefab;
 
+    [SerializeField] private TextMeshProUGUI leveLabel;
+    [SerializeField] private TextMeshProUGUI leveLabel2;
+
     // Start is called before the first frame update
     void Start()
     {
+        leveLabel.text = "Level " + (MatchManager.instance.GetMatchesWon() % 2).ToString();
+        leveLabel2.text = "Level " + (MatchManager.instance.GetMatchesWon() % 2).ToString();
+
         bricks = new List<Brick>();
         brickMatrix = new IBrick[rows, columns];
         if (MatchManager.instance.loadBricks == false)
@@ -54,6 +61,7 @@ public class BrickPlacer : MonoBehaviour
 
     void SpawnGrid()
     {
+        
 
         float gridWidth = columns * blockWidth + (columns - 1) * spacing;
         float gridHeight = rows * blockHeight + (rows - 1) * spacing;
@@ -75,7 +83,10 @@ public class BrickPlacer : MonoBehaviour
                 IBrick brickBuilder;
                 Tuple<Score, Score> scoreTuple = new Tuple<Score, Score>(vScore, hScore);
 
-                int id = UnityEngine.Random.Range(0, MatchManager.instance.GetMatchesWon()+2);
+                var i = (MatchManager.instance.GetMatchesWon() % 2) + 2;
+                int id = UnityEngine.Random.Range(0, i);
+
+
                 // The more won matches the harder blocks spawn
                 if (id == 0)
                 {

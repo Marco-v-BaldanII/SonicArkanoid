@@ -32,6 +32,7 @@ public class TitleScreen : MonoBehaviour
 
     public void NewGame()
     {
+        MatchManager.instance.SavePoints(0);
         MatchManager.instance.StartNewGame(true);
     }
 
