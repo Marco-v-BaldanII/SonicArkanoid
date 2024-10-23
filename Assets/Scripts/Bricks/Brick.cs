@@ -17,9 +17,10 @@ public class Brick : MonoBehaviour
     private Score score1;
     private Score score2;
 
-
+    private AudioSource audioSource;
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         MatchManager.instance.RegisterSpawnBlock();
     }
     public void ReceiveDamage(int damage = 1)
@@ -62,14 +63,13 @@ public class Brick : MonoBehaviour
 
 
             scoreDisplays.Item1.AddPoints(100);
-        
-      
             scoreDisplays.Item2.AddPoints(100);
         
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         ReceiveDamage(100);
     }
 

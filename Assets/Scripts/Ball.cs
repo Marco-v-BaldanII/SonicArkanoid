@@ -26,10 +26,13 @@ public class Ball : MonoBehaviour
     public delegate void EventHandler(int hp); /* method ptr , indicates that the delegates that use it take no parameters */
     public event EventHandler missEvent;
 
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
         ballRigidbody = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -67,6 +70,8 @@ public class Ball : MonoBehaviour
     {
         Debug.Log("TRIGGERRR");
 
+        
+
 
         Debug.Log(ballRigidbody.velocity.y);
         
@@ -80,6 +85,7 @@ public class Ball : MonoBehaviour
 
         if (collision.CompareTag("brick"))
         {
+            audioSource.Play();
             if (esmerald)
             {
                 return;

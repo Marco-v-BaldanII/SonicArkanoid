@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class Esmerald : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private AudioSource audioSource;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 }

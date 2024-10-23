@@ -23,7 +23,7 @@ public class PowerUpSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(Random.Range(8,15));
 
 
             var vector = rightPosition.position - leftPosition.position;

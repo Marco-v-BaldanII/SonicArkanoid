@@ -66,8 +66,6 @@ public class BrickPlacer : MonoBehaviour
             for (int column = 0; column < columns; column++)
             {
 
-               
-
                 /* Calculate the position for each block */
                 Vector2 position = new Vector2(
                     startPosition.x + column * (blockWidth + spacing),
@@ -94,18 +92,6 @@ public class BrickPlacer : MonoBehaviour
 
                 brickBuilder?.SetHealth();
                 brickBuilder?.SetPosition(blockWidth, blockHeight, position);
-
-                
-
-                //GameObject block = Instantiate(blockPrefab, canvas);
-
-
-                //RectTransform blockRect = block.GetComponent<RectTransform>();
-
-
-
-                //blockRect.anchoredPosition = position;
-                //blockRect.sizeDelta = new Vector2(blockWidth, blockHeight);
             }
         }
     }

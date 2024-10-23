@@ -11,9 +11,12 @@ public class PowerImage : MonoBehaviour
     private Image image;
     private Color transparentColor = new Color(0, 0, 0, 0);
 
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         image = GetComponent<Image>();
         image.color = transparentColor;
         paddle.PowerUpEvent += ShowVignete;
@@ -28,8 +31,10 @@ public class PowerImage : MonoBehaviour
     private IEnumerator VigneteRoutine()
     {
         image.color = Color.white;
+        audioSource.Play();
         yield return new WaitForSeconds(0.7f);
         image.color = transparentColor;
     }
+
 
 }
